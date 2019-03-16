@@ -1,0 +1,163 @@
+{% extends 'admin/demo/index.html' %}
+{% block title %}
+    <title>管理员系统--商品添加</title>
+    <link href="/static/admin/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/admin/css/bootstrap-fileinput.css" rel="stylesheet">
+{% endblock %}
+{% block cont_1 %}
+    <div class="row">
+        <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
+            <div class="page-header-heading"><span class="am-icon-home page-header-heading-icon"></span> 管理员-商品添加
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+
+{# 表单 #}
+{% block con_all %}
+    <form class="am-form tpl-form-line-form" action="{% url 'admin_insert_goods' %}" enctype="multipart/form-data"
+          method="post">
+        {% csrf_token %}
+        <div class="am-form-group">
+            <label for="user-name" class="am-u-sm-3 am-form-label">所属类别 <span
+                    class="tpl-form-line-small-title">Belong</span></label>
+            <div class="am-u-sm-9">
+                <select data-am-selected="{btnSize: 'sm'}" style="display: none;" name="tid">
+                    {% for i in data %}
+                        {% if i.level == 2 %}
+                            <option value="{{ i.id }}">&nbsp;&nbsp;&nbsp;&nbsp;{{ i.name }}</option>
+                        {% elif i.level == 1 %}
+                            <option value="{{ i.id }}" disabled>{{ i.name }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="am-form-group">
+            <label for="user-name" class="am-u-sm-3 am-form-label">商品名 <span
+                    class="tpl-form-line-small-title">Goodname</span></label>
+            <div class="am-u-sm-9">
+                <input type="text" class="tpl-form-input" required maxlength="255" name="name"
+                       placeholder="请输入商品名">
+                <small>请填写商品名</small>
+            </div>
+        </div>
+        <div class="am-form-group">
+            <label for="user-name" class="am-u-sm-3 am-form-label">商品价格 <span
+                    class="tpl-form-line-small-title">Goodprice</span></label>
+            <div class="am-u-sm-9">
+                <input type="text" class="tpl-form-input" required name="price"
+                       placeholder="请输入商品价格">
+                <small>请填写商品价格</small>
+            </div>
+        </div>
+
+        <div class="am-form-group">
+            <label for="user-name" class="am-u-sm-3 am-form-label">商品库存 <span
+                    class="tpl-form-line-small-title">Goodnum</span></label>
+            <div class="am-u-sm-9">
+                <input type="number" class="tpl-form-input" name="num"
+                       placeholder="请输入商品库存">
+                <small>请填写商品库存</small>
+            </div>
+        </div>
+        <div class="am-form-group">
+            <link rel="stylesheet" type="text/css" href="/ueditor/UE/third-party/SyntaxHighlighter/shCoreDefault.css">
+            <script type="text/javascript" src="/ueditor/UE/third-party/SyntaxHighlighter/shCore.js"></script>
+            <script type="text/javascript" src="/ueditor/UE/ueditor.config.js"></script>
+            <script type="text/javascript" src="/ueditor/UE/ueditor.all.min.js"></script>
+            <script type="text/javascript" src="/ueditor/UE/lang/zh-cn/zh-cn.js"></script>
+
+            <label for="user-intro" class="am-u-sm-3 am-form-label">商品简介</label>
+            <div class="am-u-sm-9">
+                <div id="editor" name="info" type="text/plain" style="height:500px;"></div>
+            </div>
+
+
+
+        </div>
+        <div class="am-form-group">
+            <label for="user-name" class="am-u-sm-3 am-form-label">商品状态 <span
+                    class="tpl-form-line-small-title">Sex</span></label>
+            <div class="am-u-sm-9">
+                <label class="am-radio-inline">
+                    <input type="radio" value="0" name="status"> 新上架
+                </label>
+                <label class="am-radio-inline">
+                    <input type="radio" value="1" name="status"> 热卖品
+                </label>
+                <label class="am-radio-inline">
+                    <input type="radio" value="2" name="status"> 已下架
+                </label>
+            </div>
+        </div>
+
+
+        <div class="am-form-group">
+            <label for="user-weibo" class="am-u-sm-3 am-form-label">上传商品图片
+                <span class="tpl-form-line-small-title">Images
+                </span>
+            </label>
+            <div class="fileinput fileinput-new" data-provides="fileinput" id="exampleInputUpload">
+                <div class="fileinput-new thumbnail" style="width: 200px;height: auto;max-height:150px;">
+                    <img id='picImg' style="width: 100%;height: auto;max-height: 140px;" src="/static/pics/default.jpg"
+                         alt=""/>
+                </div>
+                <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;">
+                </div>
+                <div>
+                        <span class="btn btn-primary btn-file">
+                            <span class="fileinput-new">选择文件</span>
+                            <span class="fileinput-exists">换一张</span>
+                            <input type="file" name="pic" id="picID" accept="image/gif,image/jpeg,image/x-png"/>
+                        </span>
+                    <a href="javascript:;" class="btn btn-warning fileinput-exists" data-dismiss="fileinput">移除</a>
+                </div>
+            </div>
+        </div>
+        <div class="am-form-group">
+            <div class="am-u-sm-9 am-u-sm-push-3">
+                <button class="btn btn-primary">提交</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+{% block file %}
+    <script src="/static/admin/js/jquery-1.10.2.js"></script>
+    <script src="/static/admin/js/bootstrap-fileinput.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            //比较简洁，细节可自行完善
+            $('#uploadSubmit').click(function () {
+                var data = new FormData($('#uploadForm')[0]);
+                $.ajax({
+                    url: 'xxx/xxx',
+                    type: 'POST',
+                    data: data,
+                    async: false,
+                    cache: false,
+                    contentType: fals,
+                    processData: false,
+                    success: function (data) {
+                        console.log(data);
+                        if (data.status) {
+                            console.log('upload success');
+                        } else {
+                            console.log(data.message);
+                        }
+                    },
+                    error: function (data) {
+                        console.log(data.status);
+                    }
+                });
+            });
+
+        })
+    </script>
+    <script type="text/javascript">
+        var ue = UE.getEditor('editor');
+        SyntaxHighlighter.all();
+    </script>
+{% endblock %}

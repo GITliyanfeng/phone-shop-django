@@ -1,0 +1,206 @@
+{% extends 'user/demo/index.html' %}
+{% block title %}
+    <title>购物车</title>
+{% endblock %}
+
+{% block css_js %}
+    <link rel="stylesheet" type="text/css" href="/static/user/css/cart.css">
+    <link rel="stylesheet" type="text/css" href="/static/user/css/cart-app.css">
+
+{% endblock %}
+{% block carpath %}
+    <div class="navbar-left">
+        <ol class="breadcrumb">
+            <li class="active" style="color: #0e90d2">购物车</li>
+            <li>确认订单</li>
+            <li>在线支付</li>
+            <li>完成</li>
+        </ol>
+    </div>
+{% endblock %}
+
+{% block con %}
+    <div class="mainbody cart">
+        <div class="container">
+            <!-- 购物车详情头 -->
+            <table class="cart-header">
+                <tbody>
+                <tr>
+                    <td class="cart-col-select col-md-3 col-xs-3 col-sm-3">
+
+                            <div class="row">
+                                <div class="col-md-3 col-md-offset-3">缩略图</div>
+                            </div>
+
+                    </td>
+                    <td class="cart-col-name col-md-3 hidden-xs hidden-sm">商品</td>
+                    <td class="cart-col-price col-md-2 hidden-xs hidden-sm">单价(元)</td>
+                    <td class="cart-col-number col-md-2 hidden-xs hidden-sm">数量</td>
+                    <td class="cart-col-total col-md-1 hidden-xs hidden-sm">小计(元)</td>
+                    <td class="cart-col-ctrl col-md-1 hidden-xs hidden-sm">操作</td>
+                </tr>
+                </tbody>
+            </table><!-- 购物车详情头 E-->
+
+            <!-- 购物清单信息列表 -->
+            <div class="cart-merchant-list">
+                <div class="cart-merchant">
+                    <table class="cart-merchant-body">
+                        <tbody>
+                        {% for i in request.session.Cart.values %}
+                            <tr class="cart-product" gid="{{ i.gid }}">
+                                <td class="cart-col-select col-md-3 col-xs-4 col-sm-4">
+                                    <div class="mz-checkbox "></div>
+                                    <a href="meilanx.html" class="cart-product-link" target="_blank">
+                                        <img src="{{ i.pic }}" class="cart-product-img" alt="{{ i.name }}">
+                                    </a>
+                                </td>
+                                <td class="cart-col-name col-md-3 col-xs-8 col-sm-8">
+                                    <a href="meilanx.html" class="cart-product-link" target="_blank">
+                                        <p>{{ i.name }}</p>
+                                    </a>
+                                </td>
+                                <td class="cart-col-price col-md-2 hidden-xs hidden-sm">
+                                    <p>
+                                        <span class="cart-product-price goodprice">{{ i.price }}</span>
+                                    </p>
+                                </td>
+                                <td class="cart-col-number col-md-2 hidden-xs hidden-sm">
+                                    <div class="cart-product-number-adder">
+                                        <p class="cart-product-number-max show"></p>
+                                        <div class="mz-adder goodsnum">
+                                            <button class="mz-adder-subtract " arg="-"></button>
+                                            <div class="mz-adder-num"><input class="mz-adder-input num_point"
+                                                                             value="{{ i.num }}"
+                                                                             type="text"></div>
+                                            <button class="mz-adder-add" arg="+"></button>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="cart-col-total col-md-1 hidden-xs hidden-sm">
+                                    {% load pages %}
+                                    <span class="cart-product-price total">{% docount i.price i.num %}</span>
+                                </td>
+                                <td class="cart-col-ctrl col-md-1 hidden-xs hidden-sm">
+                                    <div class="cart-product-remove">
+                                        <a href="{% url 'good_del' %}?gid={{ i.gid }}"><span
+                                                class="glyphicon glyphicon-remove"></span></a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div><!-- 购物清单信息列表 E-->
+        </div>
+        <!-- 结算详情 -->
+        <div class="cart-footer" id="cartFooter">
+            <div class="container">
+                <div class="cart-footer-left col-md-6 col-xs-4 col-sm-4">
+                    <div class="cart-select-all JSelectAll" data-mdesc="全选按钮" data-mtype="store_cart_all">
+                        <div class="mz-checkbox"></div>
+                        <span class="cart-select-title">全选</span>
+                    </div>
+                    <!-- <span class="cart-remove-selected" id="removeSelected">删除选中的商品</span> -->
+                    <span class="cart-footer-count">
+						共
+						<span class="cart-footer-num" id="totalCount"></span>
+						件商品
+				   </span>
+                    <button class="btn btn-primary" style="background: #00C3F5"><a href="{% url 'good_flush' %}" style="color: #fff">清空购物车</a></button>
+                </div>
+                <div class="cart-footer-right col-md-5 col-md-offset-1 col-sm-offset-2 col-xs-8 col-sm-6">
+					<span class="cart-footer-sum">
+						<span class="cart-footer-text">已优惠</span>
+						<span class="cart-footer-num red" id="totalDiscount">0.00</span>
+						<span class="cart-footer-text">元， 合计(不含运费)：</span>
+						<span class="cart-footer-total" id="totalPrice"></span>
+					</span>
+                    <form action="{% url 'order_make' %}?lastpath={{ request.path }}" style="display: inline-block" method="get">
+                        {#                        通过form表单的方式，将后台所需要的数据传递回去 需要传递的是商品信息#}
+                        <button  class="mz-btn success " type="button" id="cartSubmit">去结算</button>
+                    </form>
+
+                </div>
+            </div>
+        </div><!-- 结算详情 E-->
+    </div>
+{% endblock %}
+{% block js %}
+    <script type="text/javascript">
+        //回顶部
+        backTop();
+        //全选
+        allSelect();
+
+        //计算总价
+        function allCount() {
+            allcount = 0;
+            gid = [];
+            // 获取整个购物车下被选框选中的元素,他们每个人都去执行一个函数
+            $('.cart-merchant-body').find('.checked').each(function () {
+                tototo = Number($(this).parents('tr').find('.total').text());
+                allcount += tototo;
+                gg = $(this).parents('tr').attr('gid');
+                gid.push(gg);
+
+            });
+            // 将allcount写到总价位置
+            $('#totalPrice').text(allcount);
+             return gid
+        };
+
+
+        //商品数量加减
+        $('.mz-adder-subtract,.mz-adder-add').click(function () {
+            var m = $(this).parents('.goodsnum').find('input').val();
+            if ($(this).attr('arg') == '+') {
+                m++;
+                if (m > 5) {
+                    m = 5;
+                    alert('限购5件');
+                }
+                ;
+            } else {
+                m--;
+                if (m < 1) {
+                    m = 1;
+                    alert('最低1件');
+                }
+                ;
+            }
+            ;
+            $(this).parents('.goodsnum').find('input').val(m);
+            {#    每次点击，都会提交a标签跳转#}
+            var gid = $(this).parents('tr').attr('gid');
+            location.href = '{% url "good_edit" %}?gid=' + gid + '&num=' + m;
+        });
+        {# 显示购物车中一共有几件商品 #}
+        $(document).ready(function () {
+
+            var goodarr = document.getElementsByClassName('num_point');
+            var mm = 0;
+            for (var i = 0; i < goodarr.length; i++) {
+                mm += Number(goodarr[i].getAttribute('value'))
+            }
+            $('#totalCount').text(mm);
+            allCount();
+        });
+        // 去结算绑定单击事件
+        $('#cartSubmit').click(function () {
+            // 判断是否元素被选中
+            res = allCount();
+            if(res.length!=0){
+                hid = $("<input type='hidden' name='gids' value='"+res+"' />");
+                $('form').prepend(hid).submit();
+            }else {
+                alert('必须选中至少一个商品才可以下订单');
+            };
+
+
+        })
+
+
+    </script>
+{% endblock %}

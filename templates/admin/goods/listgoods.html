@@ -1,0 +1,162 @@
+{% extends 'admin/demo/index.html' %}
+{% block title %}
+    <title>管理员系统--会员列表</title>
+{% endblock %}
+{% block cont_1 %}
+    <div class="row">
+        <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
+            <div class="page-header-heading"><span class="am-icon-home page-header-heading-icon"></span> 管理员-会员列表
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+
+{# 列表 #}
+{% block con_all %}
+    <div class="row-content am-cf">
+        <div class="row">
+            <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
+                <div class="widget am-cf">
+                    <div class="widget-head am-cf">
+                        <div class="widget-title  am-cf">文章列表</div>
+
+
+                    </div>
+                    <div class="widget-body  am-fr">
+
+                        <div class="am-u-sm-12 am-u-md-6 am-u-lg-6">
+                            <div class="am-form-group">
+                                <div class="am-btn-toolbar">
+                                    <div class="am-btn-group am-btn-group-xs">
+                                        <button type="button" class="am-btn am-btn-default am-btn-success"><span
+                                                class="am-icon-plus"></span> 新增
+                                        </button>
+                                        <button type="button" class="am-btn am-btn-default am-btn-secondary"><span
+                                                class="am-icon-save"></span> 保存
+                                        </button>
+                                        <button type="button" class="am-btn am-btn-default am-btn-warning"><span
+                                                class="am-icon-archive"></span> 审核
+                                        </button>
+                                        <button type="button" class="am-btn am-btn-default am-btn-danger"><span
+                                                class="am-icon-trash-o"></span> 删除
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <form action="" method="get">
+                            <div class="am-u-sm-12 am-u-md-6 am-u-lg-3">
+                                <div class="am-form-group tpl-table-list-select">
+                                    <select data-am-selected="{btnSize: 'sm'}" style="display: none;" name="type">
+                                        <option {% if request.GET.type == "all" %}  selected {% endif %}  value="all">
+                                            所有类别
+                                        </option>
+                                        <option {% if request.GET.type == "name" %}  selected {% endif %}
+                                                                                         value="name">商品名
+                                        </option>
+                                        <option {% if request.GET.type == "price" %}  selected {% endif %}
+                                                                                         value="price">价格
+                                        </option>
+                                        <option {% if request.GET.type == "num" %}  selected {% endif %}
+                                                                                         value="num">库存
+                                        </option>
+                                        <option {% if request.GET.type == "tid__name" %}  selected {% endif %}
+                                                                                         value="tid__name">分类
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="am-u-sm-12 am-u-md-12 am-u-lg-3">
+                                <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
+                                    <input type="text" class="am-form-field " name="keyword"
+                                           value="{{ request.GET.keyword }}">
+                                    <span class="am-input-group-btn">
+                                    <button class="am-btn  am-btn-default am-btn-success tpl-table-list-field am-icon-search">
+                                    </button>
+                                </span>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="am-u-sm-12">
+                            <table width="100%" class="am-table am-table-compact am-table-striped tpl-table-black ">
+                                <thead>
+                                <tr>
+                                    <th>商品图片</th>
+                                    <th>id号</th>
+                                    <th>商品名</th>
+                                    <th>商品价格</th>
+                                    <th>商品类别</th>
+                                    <th>状态</th>
+                                    <th>库存</th>
+                                    <th>添加时间</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for i in data %}
+
+                                    <tr class="gradeX">
+                                        <td>
+                                            <img src="{{ i.pic }}" class="tpl-table-line-img" alt="">
+                                        </td>
+                                        <td class="am-text-middle goodid">{{ i.id }}</td>
+                                        <td class="am-text-middle">{{ i.name }}</td>
+                                        <td class="am-text-middle">{{ i.price }}</td>
+                                        <td class="am-text-middle">{{ i.tid.name }}</td>
+                                        <td class="am-text-middle">{% if i.status == 0 %}新上架{% elif i.status == 1 %}热卖{% elif i.status == 2 %}已下架{% endif %}</td>
+                                        <td class="am-text-middle">{{ i.num }}</td>
+                                        <td class="am-text-middle">{{ i.addtime|date:'Y-m-d H:i:s' }}</td>
+                                        <td class="am-text-middle">
+                                            <div class="tpl-table-black-operation">
+                                                <a href="{% url 'admin_edit_goods' i.id %}">
+                                                    <i class="am-icon-pencil"></i> 编辑
+                                                </a>
+                                                <a href="javascript:void(0);" class="tpl-table-black-operation-del">
+                                                    <i class="am-icon-trash"></i> 删除
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                {% endfor %}
+                                <!-- more data -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="am-u-lg-12 am-cf">
+
+                            <div class="am-fr">
+                                <ul class="am-pagination tpl-pagination">
+                                    {#                                    <li class="am-disabled"><a href="#">«</a></li>#}
+                                    {% load pages %}
+                                    {% pages data.paginator.num_pages request %}
+                                    {#                                    '<li class="am-active"><a href="#">'+str(i)+'</a></li>'#}
+                                    {#                                    <li><a href="#">»</a></li>#}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {#    ajax删除#}
+    <script>
+        $('.tpl-table-black-operation-del').click(function () {
+            var id = $(this).parents('tr').find('.goodid').text();
+            var obj = $(this);
+            {#实现的途径，发送请求，修改数据库数据，删除当前的元素#}
+            $.get('{% url 'admin_delete_goods' %}', {'id': id}, function (data) {
+                if (data['error'] == 0) {
+                    alert(data['msg']);
+                    obj.parents('tr').remove();
+                } else {
+                    alert(data['msg']);
+                }
+                ;
+            },);
+        });
+    </script>
+{% endblock %}

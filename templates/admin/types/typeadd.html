@@ -1,0 +1,53 @@
+{% extends 'admin/demo/index.html' %}
+{% block title %}
+    <title>管理员系统--类型添加</title>
+{% endblock %}
+{% block cont_1 %}
+    <div class="row">
+        <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
+            <div class="page-header-heading"><span class="am-icon-home page-header-heading-icon"></span> 管理员-类型添加
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+
+{# 表单 #}
+{% block con_all %}
+    <form class="am-form tpl-form-border-form tpl-form-border-br" action="{% url 'admin_insert_types' %}"
+          method="post">
+        {% csrf_token %}
+        <div class="am-form-group">
+            <label for="user-name" class="am-u-sm-3 am-form-label">所属类别 <span
+                    class="tpl-form-line-small-title">Belong</span></label>
+            <div class="am-u-sm-9">
+                <select data-am-selected="{btnSize: 'sm'}" style="display: none;" name="pid">
+                    <option value="0" >顶级分类</option>
+                    {% for i in data %}
+                        {% if i.level == 2  %}
+                        <option value="{{ i.id }}" disabled>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ i.name }}</option>
+                        {% elif i.level == 1 %}
+                        <option value="{{ i.id }}">&nbsp;&nbsp;&nbsp;&nbsp;{{ i.name }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="am-form-group">
+            <label for="user-name" class="am-u-sm-3 am-form-label">商品分类 <span
+                    class="tpl-form-line-small-title">Types</span></label>
+            <div class="am-u-sm-9">
+                <input type="text" class="tpl-form-input" required maxlength="30" name="name" id="types-name"
+                       placeholder="请输入商品分类">
+                <small>请填写需要添加的商品分类</small>
+            </div>
+        </div>
+        <div class="am-form-group">
+            <div class="am-u-sm-9 am-u-sm-push-3">
+                <button class="am-btn am-btn-primary tpl-btn-bg-color-success ">提交</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}

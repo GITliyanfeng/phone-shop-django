@@ -1,0 +1,151 @@
+{% extends 'admin/demo/index.html' %}
+{% block title %}
+    <title>管理员系统--管理员添加</title>
+    <link href="/static/admin/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/admin/css/bootstrap-fileinput.css" rel="stylesheet">
+{% endblock %}
+{% block cont_1 %}
+    <div class="row">
+        <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
+            <div class="page-header-heading"><span class="am-icon-home page-header-heading-icon"></span> 管理员-会员添加
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+
+{# 表单 #}
+{% block con_all %}
+    <form class="am-form tpl-form-line-form" id="myform" action="{% url 'auth_add_user' %}" enctype="multipart/form-data"
+          method="post">
+        {% csrf_token %}
+        <div class="am-form-group">
+            <label for="user-name" class="am-u-sm-3 am-form-label">用户名 <span
+                    class="tpl-form-line-small-title">Username</span></label>
+            <div class="am-u-sm-9">
+                <input type="text" class="tpl-form-input" required maxlength="30" name="name" id="user-name"
+                       placeholder="请输入用户名">
+                <small>请填写用户名</small>
+            </div>
+        </div>
+        <div class="am-form-group">
+            <label for="user-name" class="am-u-sm-3 am-form-label">密码 <span
+                    class="tpl-form-line-small-title">Password</span></label>
+            <div class="am-u-sm-9">
+                <input type="password" class="tpl-form-input" minlength="6" maxlength="20" name="password"
+                       id="user-password" placeholder="请输入密码">
+                <small>请填写6-20位密码</small>
+            </div>
+        </div>
+        <div class="am-form-group">
+            <label for="user-name" class="am-u-sm-3 am-form-label">邮箱 <span
+                    class="tpl-form-line-small-title">Email</span></label>
+            <div class="am-u-sm-9">
+                <input type="email" class="tpl-form-input" name="email" minlength="8" maxlength="30" id="user-email"
+                       placeholder="请输入邮箱">
+                <small>请填写有效邮箱</small>
+            </div>
+        </div>
+        <div class="am-form-group">
+            <label for="user-name" class="am-u-sm-3 am-form-label">级别 <span
+                    class="tpl-form-line-small-title">Level</span></label>
+            <div class="am-u-sm-9">
+                <label class="am-radio-inline">
+                    <input type="radio" value="1" name="level"> 超级管理
+                </label>
+                <label class="am-radio-inline">
+                    <input type="radio" value="0" checked name="level"> 普通管理
+                </label>
+            </div>
+        </div>
+        <div class="am-form-group">
+            <label for="user-name" class="am-u-sm-3 am-form-label">所属组 <span
+                    class="tpl-form-line-small-title">Group</span></label>
+            <div class="am-u-sm-9">
+                <div style="float: left;text-align: center;">
+                    <p style="color: #F37B1D">可选组</p>
+                    <select id="select1" multiple="multiple"
+                            style="width:300px;height:200px; float:left; border:1px solid rgba(255, 255, 255, 0.2); padding:4px; ">
+                        {% for i in data %}
+                            <option value="{{ i.id }}">{{ i.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <p>
+                        <button id="add_all" class="am-btn am-btn-warning am-btn-xs" type="button">全选&nbsp;&gt;</button>
+                    </p>
+                </div>
+                <div style="float: left;width: 50px;height:200px;">
+                    <ul style="margin-top: 100px;text-align: center;">
+                        <li>
+                            <button id="add" class="am-btn am-btn-warning am-btn-xs" type="button">&gt;</button>
+                        </li>
+                        <br>
+                        <li>
+                            <button id="remove" class="am-btn am-btn-warning am-btn-xs" type="button">&lt;</button>
+                        </li>
+                    </ul>
+                </div>
+
+                <div style="float: left;text-align: center;">
+                    <p style="color: #F37B1D">已选中的组</p>
+                    <select name="prms" id="select2" multiple="multiple"
+                            style="width:300px;height:200px; float:left; border:1px solid rgba(255, 255, 255, 0.2); padding:4px; ">
+
+                    </select>
+                    <p>
+                        <button id="remove_all" class="am-btn am-btn-warning am-btn-xs" type="button">全部移除</button>
+                    </p>
+                </div>
+
+            </div>
+        </div>
+        <div class="am-form-group">
+            <div class="am-u-sm-9 am-u-sm-push-3">
+                <button class="btn btn-primary">提交</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+{% block file %}
+    <script>
+        // 添加按钮  将左侧已选中的元素添加到右侧
+        $('#add').click(function () {
+            $('#select1 option:selected').appendTo('#select2');
+        })
+        // 移除按钮   将右侧的已选中的元素移动到左侧
+        $('#remove').click(function () {
+            $('#select2 option:selected').appendTo('#select1');
+        })
+        // 全选按钮，将左侧所有元素移动到右侧
+        $('#add_all').click(function () {
+            $('#select1 option').appendTo('#select2');
+        })
+        // 取消按钮将右侧所有的元素移动到左侧
+        $('#remove_all').click(function () {
+            $('#select2 option').appendTo('#select1');
+        })
+        // 双击左侧的元素，将自己移动到右侧
+        $('#select1').dblclick(function () {
+            $('option:selected', this).appendTo('#select2');
+        })
+        // 双加右侧的元素，将自己移动到左侧
+        $('#select2').dblclick(function () {
+            $('option:selected', this).appendTo('#select1');
+        })
+        // form表单提交的时候会执行一个函数，这个函数将右侧所有元素选中，后提交
+        $('#myform').submit(function () {
+
+            // $('#select2 option').each(function(){
+            //     this.selected = true
+            // })
+
+            // $('#select2 option').attr('selected',true) //X
+            $('#select2 option').prop('selected', true)
+
+            // return false;
+        })
+
+    </script>
+{% endblock %}

@@ -1,0 +1,307 @@
+{% extends 'user/demo/index.html' %}
+{% block title %}
+    <title>确认订单-选择地址</title>
+{% endblock %}
+
+{% block css_js %}
+    <link rel="stylesheet" type="text/css" href="/static/user/css/cart.css">
+    <link rel="stylesheet" type="text/css" href="/static/user/css/cart-app.css">
+
+{% endblock %}
+{% block carpath %}
+    <div class="navbar-left">
+        <ol class="breadcrumb">
+            <li>购物车</li>
+            <li class="active" style="color: #0e90d2">确认订单</li>
+            <li>在线支付</li>
+            <li>完成</li>
+        </ol>
+    </div>
+{% endblock %}
+
+{% block con %}
+    <!--地址选择的开头-->
+    <div class="mainbody cart" style="padding-bottom:10px ">
+        <div class="container">
+            <table class="cart-header">
+                <tr>
+                    <td class="cart-col-select col-md-3 col-xs-3 col-sm-3">
+                        <h4 style="padding-top: 6px;color: #666666;">选择地址<span style="color: #0e90d2;">>>></span></h4>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+
+    <div class="bs-example" data-example-id="simple-address"
+         style="padding-left:70px;padding-right:70px;background: #F5F5F5; ">
+        <div class="row" style="background: #fff;">
+            <div class="col-md-12">
+                <br>
+                <motaikuang>
+                    <!--点击这个按钮，弹出莫泰框，添加地址-->
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal"
+                            style="margin-left: 10px;margin-bottom: 10px">
+                        添加地址
+                    </button>
+                    <!-- Modal -->
+                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                            aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title" id="myModalLabel">添加地址</h4>
+                                </div>
+                                <point>
+                                    <div class="modal-body">
+                                        <div class="bs-example">
+                                            <form action="{% url 'add_address' %}" method="post">
+                                                {% csrf_token %}
+                                                    <input type="hidden" name="gids" value="{{ strgids }}">
+                                                    <input type="hidden" name="uid"
+                                                           value="{{ request.session.VipUser.id }}">
+                                                <div class="form-group">
+                                                    <label>收件人</label>
+                                                    <input type="text" name="addressname" class="form-control">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>送货地址</label>
+                                                    <input type="text" name="address" class="form-control">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>联系电话</label>
+                                                    <input type="text" name="addressphone" class="form-control">
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" name="isdefault" value="1"> 是否默认
+                                                    </label>
+                                                </div>
+
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                        <button type="button" class="btn btn-primary submitaddress">提交</button>
+                                    </div>
+                                </point>
+                            </div>
+                        </div>
+                    </div>
+                </motaikuang>
+                <dizhi>
+                    <div class="row">
+                        {% for i in address %}
+                            {% if i.addressstatus == 0 %}
+                            {% if not i.isdefault %}
+                                <div class="col-md-3">
+                                    <address style="height: 100px;margin: 10px;border: 1px solid #ccc;padding: 5px;"
+                                             aid="{{ i.id }}">
+                                        收货人：<strong>{{ i.addressname }}</strong><br>
+                                        收货地址： {{ i.address }}<br>
+                                        <abbr title="手机号">手机号:</abbr> {{ i.addressphone }}
+                                    </address>
+                                </div>
+                            {% else %}
+                                <div class="col-md-3">
+                                    <address style="height: 100px;margin: 10px;border: 1px dashed #0e90d2;padding: 5px;"
+                                             aid="{{ i.id }}" isdefault="true">
+                                        收货人：<strong>{{ i.addressname }}</strong><br>
+                                        收货地址： {{ i.address }}<br>
+                                        <abbr title="手机号">手机号:</abbr> {{ i.addressphone }}
+                                        <div style="text-align: right">
+                                            <span style="color: #0e90d2">默认</span>
+                                        </div>
+                                    </address>
+                                </div>
+                            {% endif %}
+                            {% endif %}
+
+                        {% endfor %}
+                    </div>
+                </dizhi>
+            </div>
+        </div>
+    </div>
+
+
+    <!--地址选择的E-->
+    <div class="mainbody cart" style="padding-bottom:0px ">
+        <div class="container">
+            <table class="cart-header">
+                <tr>
+                    <td class="cart-col-select col-md-3 col-xs-3 col-sm-3">
+                        <h4 style="padding-top: 6px;color: #666666;">所包含的商品<span style="color: #0e90d2;">>>></span></h4>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="mainbody cart">
+        <div class="container">
+            <!-- 购物车详情头 -->
+            <table class="cart-header">
+                <tbody>
+                <tr>
+                    <td class="cart-col-select col-md-3 col-xs-3 col-sm-3 ">
+                        <div class="row">
+                            <div class="col-md-3 col-md-offset-3">缩略图</div>
+                        </div>
+                    </td>
+
+                    <td class="cart-col-name col-md-3 hidden-xs hidden-sm">商品</td>
+                    <td class="cart-col-price col-md-2 hidden-xs hidden-sm">单价(元)</td>
+                    <td class="cart-col-number col-md-2 hidden-xs hidden-sm">数量</td>
+                    <td class="cart-col-total col-md-1 hidden-xs hidden-sm">小计(元)</td>
+                </tr>
+                </tbody>
+            </table><!-- 购物车详情头 E-->
+
+            <!-- 购物清单信息列表 -->
+            <div class="cart-merchant-list">
+                <div class="cart-merchant">
+                    <table class="cart-merchant-body">
+                        <tbody>
+                        {% for i in data %}
+                            <tr class="cart-product" gid="{{ i.gid }}">
+                                <td class="cart-col-select col-md-3 col-xs-4 col-sm-4">
+                                    <a href="{% url 'user_info' i.gid %}" class="cart-product-link">
+                                        <img src="{{ i.pic }}" class="cart-product-img" alt="{{ i.name }}">
+                                    </a>
+                                </td>
+                                <td class="cart-col-name col-md-3 col-xs-8 col-sm-8">
+                                    <a href="{% url 'user_info' i.gid %}" class="cart-product-link">
+                                        <p>{{ i.name }}</p>
+                                    </a>
+                                </td>
+                                <td class="cart-col-price col-md-2 hidden-xs hidden-sm">
+                                    <p>
+                                        <span class="cart-product-price goodprice">{{ i.price }}</span>
+                                    </p>
+                                </td>
+                                <td class="cart-col-number col-md-2 hidden-xs hidden-sm">
+                                    <div class="cart-product-number-adder">
+                                        <p class="cart-product-number-max show"></p>
+                                        <div class="mz-adder goodsnum">
+                                            <div class="mz-adder-num" style="display:inline-block;margin-left: 40px;">
+                                                <input disabled class="mz-adder-input num_point" value="{{ i.num }}"
+                                                       type="text">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="cart-col-total col-md-1 hidden-xs hidden-sm">
+                                    {% load pages %}
+                                    <span class="cart-product-price total">{% docount i.price i.num %}</span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div><!-- 购物清单信息列表 E-->
+        </div>
+        <!-- 结算详情 -->
+        <div class="cart-footer" id="cartFooter">
+            <div class="container">
+                <div class="cart-footer-left col-md-6 col-xs-4 col-sm-4">
+                    <div class="cart-select-all JSelectAll" data-mdesc="全选按钮" data-mtype="store_cart_all">
+
+                    </div>
+                    <!-- <span class="cart-remove-selected" id="removeSelected">删除选中的商品</span> -->
+                    <span class="cart-footer-count">
+						共
+						<span class="cart-footer-num" id="totalCount"></span>
+						件商品
+				   </span>
+                </div>
+                <div class="cart-footer-right col-md-5 col-md-offset-1 col-sm-offset-2 col-xs-8 col-sm-6">
+					<span class="cart-footer-sum">
+						<span class="cart-footer-text">已优惠</span>
+						<span class="cart-footer-num red" id="totalDiscount">0.00</span>
+						<span class="cart-footer-text">元， 合计(不含运费)：</span>
+						<span class="cart-footer-total" id="totalPrice"></span>
+					</span>
+                    <form action="{% url 'order_create' %}" method="post" style="display: inline-block">
+                        {% csrf_token %}
+                        <div class="datahidden" style="display: none">
+                        </div>
+                        <input type="hidden" name="gids" value="{{ strgids }}">
+                        <button class="mz-btn success" type="submit" id="cartSubmit">去付款
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div><!-- 结算详情 E-->
+    </div>
+{% endblock %}
+{% block js %}
+    <script type="text/javascript">
+        //回顶部
+        backTop();
+        //全选
+        allSelect();
+
+        //计算总价
+        function allCount() {
+            allcount = 0;
+            // 获取整个购物车下被选框选中的元素,他们每个人都去执行一个函数
+            $('.cart-merchant-body').find('tr').each(function () {
+                tototo = Number($(this).find('.total').text());
+                allcount += tototo;
+            });
+            // 将allcount写到总价位置
+            $('#totalPrice').text(allcount);
+        };
+
+        {# 显示购物车中一共有几件商品 #}
+        $(document).ready(function () {
+
+            var goodarr = document.getElementsByClassName('num_point');
+            var mm = 0;
+            for (var i = 0; i < goodarr.length; i++) {
+                mm += Number(goodarr[i].getAttribute('value'))
+            }
+            $('#totalCount').text(mm);
+            allCount();
+        });
+        // 模态框通过form表单，发送数据，添加收货地址
+        $('.submitaddress').click(function () {
+            $(this).parents('point').find('form').submit()
+        });
+        // 先获取，地址id
+        var init_id = $('address[isdefault="true"]').attr('aid');
+        var init_inp = $('<input type="hidden" name="aid" value='+init_id+' />');
+        $('.datahidden').append(init_inp);
+        // 选择地址改变颜色，返回隐藏域
+        $('dizhi').find('address').each(function () {
+            $(this).click(function () {
+                $(this).parents('dizhi').find('address').css(
+                    {
+                        'height': '100px',
+                        'margin': '10px',
+                        'border': '1px solid #ccc ',
+                        'padding': '5px',
+                    }
+                );
+                aid = $(this).attr('aid');
+                $(this).css({
+                    'height': '100px',
+                    'margin': '10px',
+                    'border': '1px dashed #0e90d2 ',
+                    'padding': '5px',
+                });
+                //
+                console.log(aid);
+                // 向表单中添加隐藏域
+                var hid = $('<input type="hidden" name="aid" value='+aid+' />')
+                $('.datahidden').empty().append(hid);
+            });
+        });
+
+
+    </script>
+{% endblock %}

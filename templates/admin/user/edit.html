@@ -1,0 +1,154 @@
+{% extends 'admin/demo/index.html' %}
+{% block title %}
+    <title>管理员系统--会员跟改</title>
+    <link href="/static/admin/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/admin/css/bootstrap-fileinput.css" rel="stylesheet">
+{% endblock %}
+{% block cont_1 %}
+    <div class="row">
+        <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
+            <div class="page-header-heading"><span class="am-icon-home page-header-heading-icon"></span> 管理员-会员添加
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+
+{# 表单 #}
+{% block con_all %}
+    <form class="am-form tpl-form-line-form" action="{% url 'admin_update_user' %}" enctype="multipart/form-data"
+          method="post">
+        {% csrf_token %}
+        <input type="hidden" name="id" value="{{ data.id }}">
+        <div class="am-form-group">
+            <label for="user-name" class="am-u-sm-3 am-form-label">用户名 <span
+                    class="tpl-form-line-small-title">Username</span></label>
+            <div class="am-u-sm-9">
+                <input type="text" class="tpl-form-input" required maxlength="30" name="username" id="user-name"
+                       placeholder="请输入用户名" value="{{ data.username }}">
+                <small>请填写用户名</small>
+            </div>
+        </div>
+        <div class="am-form-group">
+            <label for="user-name" class="am-u-sm-3 am-form-label">密码 <span
+                    class="tpl-form-line-small-title">Password</span></label>
+            <div class="am-u-sm-9">
+                <input type="password" class="tpl-form-input" minlength="6" maxlength="20" name="password"
+                       id="user-name" placeholder="请输入密码" value="">
+                <small>请填写6-20位密码</small>
+            </div>
+        </div>
+        <div class="am-form-group">
+            <label for="user-name" class="am-u-sm-3 am-form-label">手机号 <span
+                    class="tpl-form-line-small-title">Phone</span></label>
+            <div class="am-u-sm-9">
+                <input type="number" class="tpl-form-input" minlength="11" maxlength="11" name="phone" id="user-name"
+                       placeholder="请输入手机号" value="{{ data.phone }}">
+                <small>请填写真实手机号码</small>
+            </div>
+        </div>
+        <div class="am-form-group">
+            <label for="user-name" class="am-u-sm-3 am-form-label">邮箱 <span
+                    class="tpl-form-line-small-title">Email</span></label>
+            <div class="am-u-sm-9">
+                <input type="email" class="tpl-form-input" name="email" minlength="8" maxlength="30" id="user-name"
+                       placeholder="请输入邮箱" value="{{ data.email }}">
+                <small>请填写有效邮箱</small>
+            </div>
+        </div>
+        <div class="am-form-group">
+            <label for="user-name" class="am-u-sm-3 am-form-label">性别 <span
+                    class="tpl-form-line-small-title">Sex</span></label>
+            <div class="am-u-sm-9">
+                {% if data.sex == 1 %}
+                    <label class="am-radio-inline">
+                        <input type="radio" value="1" name="sex" checked> 男
+                    </label>
+                    <label class="am-radio-inline">
+                        <input type="radio" value="0" name="sex"> 女
+                    </label>
+                {% else %}
+                    <label class="am-radio-inline">
+                        <input type="radio" value="1" name="sex"> 男
+                    </label>
+                    <label class="am-radio-inline">
+                        <input type="radio" value="0" name="sex" checked> 女
+                    </label>
+                {% endif %}
+            </div>
+        </div>
+        <div class="am-form-group">
+            <label for="user-name" class="am-u-sm-3 am-form-label">年龄 <span
+                    class="tpl-form-line-small-title">Age</span></label>
+            <div class="am-u-sm-9">
+                <input type="number" class="tpl-form-input" name="age" id="user-name" max="200" placeholder="请输入年龄"
+                       value="{{ data.age }}">
+                <small>请填写年龄</small>
+            </div>
+        </div>
+
+
+        <div class="am-form-group">
+            <label for="user-weibo" class="am-u-sm-3 am-form-label">上传头像 <span
+                    class="tpl-form-line-small-title">Images</span></label>
+            <div class="fileinput fileinput-new" data-provides="fileinput" id="exampleInputUpload">
+                <div class="fileinput-new thumbnail" style="width: 200px;height: auto;max-height:150px;">
+                    <img id='picImg' style="width: 100%;height: auto;max-height: 140px;" src="{{ data.pic }}"
+                         alt=""/>
+                </div>
+                <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;">
+                </div>
+                <div>
+                    <span class="btn btn-primary btn-file">
+                        <span class="fileinput-new">选择文件</span>
+                        <span class="fileinput-exists">换一张</span>
+                        <input type="file" name="pic" id="picID" accept="image/gif,image/jpeg,image/x-png"/>
+                    </span>
+                    <a href="javascript:;" class="btn btn-warning fileinput-exists" data-dismiss="fileinput">移除</a>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="am-form-group">
+            <div class="am-u-sm-9 am-u-sm-push-3">
+                <button class="am-btn am-btn-primary tpl-btn-bg-color-success ">跟改</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+{% block file %}
+    <script src="/static/admin/js/jquery-1.10.2.js"></script>
+    <script src="/static/admin/js/bootstrap-fileinput.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            //比较简洁，细节可自行完善
+            $('#uploadSubmit').click(function () {
+                var data = new FormData($('#uploadForm')[0]);
+                $.ajax({
+                    url: 'xxx/xxx',
+                    type: 'POST',
+                    data: data,
+                    async: false,
+                    cache: false,
+                    contentType: fals,
+                    processData: false,
+                    success: function (data) {
+                        console.log(data);
+                        if (data.status) {
+                            console.log('upload success');
+                        } else {
+                            console.log(data.message);
+                        }
+                    },
+                    error: function (data) {
+                        console.log(data.status);
+                    }
+                });
+            });
+
+        })
+    </script>
+{% endblock %}

@@ -1,0 +1,215 @@
+{% extends 'user/demo/index.html' %}
+{% block title %}
+    <title>我的订单列表</title>
+{% endblock %}
+
+{% block css_js %}
+    <link rel="stylesheet" type="text/css" href="/static/user/css/order.css">
+    <link rel="stylesheet" type="text/css" href="/static/user/css/order-app.css">
+{% endblock %}
+
+{% block con %}
+    <div class="mainbody order">
+        <div class="container">
+            <!-- 面包屑导航 -->
+            <div class="crumbs col-xs-12 col-sm-12">
+                <ol class="breadcrumb">
+                    <li class="hidden-xs hidden-sm"><a href="index.html">首页</a></li>
+                    <li class="hidden-xs hidden-sm"><a href="{% url 'my_center' %}">我的商城</a></li>
+                    <li class="active" style="color: #0e90d2">我的订单</li>
+                </ol>
+            </div><!-- 面包屑导航 E-->
+            <div class="main clearfix">
+                <!-- 左侧导航 -->
+                <div class="left-nav f-fl col-md-4 hidden-xs hidden-sm">
+                    <div class="nav-main">
+                        <a href="javascript:;" class="type-title"><span class="glyphicon glyphicon-list-alt"
+                                                                        aria-hidden="true"></span>订单中心</a>
+                        <a href="{% url 'my_order_list' %}" class="ml">我的订单</a>
+                        <a href="#" class="ml ">我的回购单</a>
+                        <a href="#" class="ml ">我的意外保</a>
+                        <a href="javascript:;" class="type-title"><span class="glyphicon glyphicon-user"
+                                                                        aria-hidden="true"></span>个人中心</a>
+                        <a href="/#" class="ml active" style="color: #0e90d2">地址管理</a>
+                        <a href="#" class="ml ">我的收藏</a>
+                        <a href="#" class="ml ">消息提醒</a>
+                        <a href="#" class="ml ">建议反馈</a>
+                    </div>
+                </div><!-- 左侧导航 E-->
+                <!-- 右侧内容展示 -->
+                <div class="right-content f-fr col-md-8 col-xs-12 col-sm-12">
+                    <!--地址列表从这里开始-->
+                    <div>
+                        <motaikuang>
+                            <!--点击这个按钮，弹出莫泰框，添加地址-->
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal"
+                                    style="margin-left: 10px;margin-bottom: 10px">
+                                添加地址
+                            </button>
+                            <!-- Modal -->
+                            <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+                                 aria-labelledby="myModalLabel">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                                    aria-hidden="true">&times;</span></button>
+                                            <h4 class="modal-title" id="myModalLabel">添加地址</h4>
+                                        </div>
+                                        <point>
+                                            <div class="modal-body">
+                                                <div class="bs-example">
+                                                    <form action="{% url 'add_address' %}?space={{ request.path }}"
+                                                          method="post">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name="uid"
+                                                               value="{{ request.session.VipUser.id }}">
+                                                        <div class="form-group">
+                                                            <label>收件人</label>
+                                                            <input type="text" name="addressname" class="form-control">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>送货地址</label>
+                                                            <input type="text" name="address" class="form-control">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>联系电话</label>
+                                                            <input type="text" name="addressphone" class="form-control">
+                                                        </div>
+                                                        <div class="checkbox">
+                                                            <label>
+                                                                <input type="checkbox" name="isdefault" value="1"> 是否默认
+                                                            </label>
+                                                        </div>
+
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                                                </button>
+                                                <button type="button" class="btn btn-primary submitaddress">提交</button>
+                                            </div>
+                                        </point>
+                                    </div>
+                                </div>
+                            </div>
+                        </motaikuang>
+                    </div>
+                    <div class="order-main">
+                        <div class="list-head hidden-xs hidden-sm">
+                            <div class="bs-example" data-example-id="hoverable-table">
+                                <table class="table table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>收件人姓名</th>
+                                        <th>收件人地址</th>
+                                        <th>收件人电话</th>
+                                        <th>是否默认</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    {% for i in data %}
+                                        {% if i.addressstatus == 0 %}
+                                            <tr>
+                                                <th scope="row">{{ i.addressname }}</th>
+                                                <td>{{ i.address }}</td>
+                                                <td>{{ i.addressphone }}</td>
+                                                <td>{% if i.isdefault == True %}是{% else %}否{% endif %}</td>
+                                                <td>
+                                                    <!-- Button trigger modal -->
+                                                    <button type="button" class="btn btn-success btn-xs"
+                                                            data-toggle="modal" data-target="#{{ i.id }}">
+                                                        修改
+                                                    </button>
+                                                    <!-- Modal -->
+                                                <motaikuang>
+                                                    <div class="modal fade" id="{{ i.id }}" tabindex="-1" role="dialog"
+                                                         aria-labelledby="myModalLabel">
+                                                        <div class="modal-dialog" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close"
+                                                                            data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">&times;</span></button>
+                                                                    <h4 class="modal-title" id="myModalLabel">修改地址</h4>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <form class="form-horizontal" action="{% url 'address_manage_update' %}?aid={{ i.id }}" method="post">
+                                                                    {% csrf_token %}
+                                                                        <div class="form-group">
+                                                                            <label class="col-sm-2 control-label">姓名</label>
+                                                                            <div class="col-sm-10">
+                                                                                <input type="text" class="form-control" name="addressname"  value="{{ i.addressname }}">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label class="col-sm-2 control-label">手机号</label>
+                                                                            <div class="col-sm-10">
+                                                                                <input type="text" class="form-control" name="addressphone" value="{{ i.addressphone }}">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label class="col-sm-2 control-label">地址</label>
+                                                                            <div class="col-sm-10">
+                                                                                <input type="text" class="form-control" name="address" value="{{ i.address }}">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <div class="col-sm-offset-2 col-sm-10">
+                                                                                <div class="checkbox">
+                                                                                    <label>
+
+                                                                                        <input type="checkbox" value="1" {% if i.isdefault == True %} checked {% endif %} name="isdefault">设为默认
+                                                                                    </label>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-default"
+                                                                            data-dismiss="modal">取消修改
+                                                                    </button>
+                                                                    <button type="button" class="btn btn-primary savechange">保存修改
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </motaikuang>
+
+                                                    <a class="btn btn-xs btn-primary"
+                                                       href="{% url 'address_manage_delete' %}?aid={{ i.id }}">删除</a>
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div id="tableList" class="type-contain ui-load-container">
+                            <div class="ui-load-content"><input id="unPayNum" value="0" type="hidden">
+                                <table class="orderItem">
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $('.submitaddress,.savechange').click(function () {
+            $(this).parents('motaikuang').find('form').submit();
+        })
+    </script>
+{% endblock %}

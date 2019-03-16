@@ -1,0 +1,135 @@
+{% extends 'admin/demo/index.html' %}
+{% block title %}
+    <title>管理员系统--类别列表</title>
+{% endblock %}
+{% block cont_1 %}
+    <div class="row">
+        <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
+            <div class="page-header-heading"><span class="am-icon-home page-header-heading-icon"></span> 管理员-类别列表
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+
+{# 列表 #}
+{% block con_all %}
+    <div class="row-content am-cf">
+        <div class="row">
+            <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
+                <div class="widget am-cf">
+                    <div class="widget-head am-cf">
+                        <div class="widget-title  am-cf">订单列表</div>
+
+
+                    </div>
+                    <div class="widget-body  am-fr">
+
+
+
+                        <div class="am-u-sm-12">
+                            <table width="100%" class="am-table am-table-compact am-table-striped tpl-table-black "
+                                   id="example-r">
+                                <thead>
+                                <!--表头-->
+                                <tr>
+                                    <th>用户名</th>
+                                    <th>订单号</th>
+                                    <th>下单时间</th>
+                                    <th>订单状态</th>
+                                    <th>订单金额</th>
+                                    <th>处理</th>
+
+                                </tr>
+                                </thead>
+                                <!--表体-->
+                                <tbody>
+                                {% for i in data %}
+
+                                    <!--单行显示的订单记录-->
+                                    <tr class="gradeX">
+                                        <td>{{ i.uid.username }}</td>
+                                        <td>{{ i.id }}</td>
+                                        <td>{{ i.addtime|date:'Y-m-d H:i:s' }}</td>
+                                        <td>{% if i.status == 0 %}待付款{% elif i.status == 1 %}已付款{% elif i.status == 2 %}
+                                            已签收{% else %}已取消{% endif %}</td>
+                                        <td style="color: red">￥{{ i.total }}元</td>
+                                        <td><a href="{% url 'order_del' %}?id={{ i.id }}" class="am-btn-xl am-btn-warning ">删除</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6" style="padding: 0;">
+                                            <section data-am-widget="accordion"
+                                                     class="am-accordion am-accordion-default"
+                                                     data-am-accordion='{ "multiple": true }'
+                                                     style="margin: 0;padding: 0">
+                                                <dl class="am-accordion-item">
+                                                    <dt class="am-accordion-title">
+                                                        <a href="javascript:;" class="tpl-table-black-operation-del">
+                                                            <i class="am-icon-bars"></i> 订单详情
+                                                        </a>
+                                                    </dt>
+                                                    <dd class="am-accordion-bd am-collapse ">
+                                                        <!-- 规避 Collapase 处理有 padding 的折叠内容计算计算有误问题， 加一个容器 -->
+                                                        <div class="am-accordion-content">
+                                                            <table width="100%"
+                                                                   class="am-table am-table-compact am-table-striped tpl-table-black "
+                                                                   id="example-r">
+                                                                <thead>
+                                                                <tr>
+                                                                    <td>收件人--:--<span>{{ i.address.addressname }}</span></td>
+                                                                    <td colspan="2">联系电话--:--<span>{{ i.address.addressphone }}</span></td>
+                                                                    <td colspan="2">收件地址--:--<span>{{ i.address.address }}</span></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>商品缩略图</td>
+                                                                    <td>商品名</td>
+                                                                    <td>商品单价</td>
+                                                                    <td>购买数量</td>
+                                                                    <td>小计</td>
+                                                                </tr>
+                                                                {% for ii in i.orderinfo_set.all %}
+                                                                <tr class="gradeX">
+                                                                    <td><img src="{{ ii.goodpic }}" alt="" style="width: 50%"></td>
+                                                                    <td style="padding-top: 60px">{{ ii.goodname }}</td>
+                                                                    <td style="padding-top: 60px;color: red">￥{{ ii.goodprice }}元</td>
+                                                                    <td style="padding-top: 60px">{{ ii.goodnum }}</td>
+                                                                    <td style="padding-top: 60px;color: red">￥{{ ii.goodsubtotal }}元</td>
+
+                                                                </tr>
+                                                                {% endfor %}
+                                                                </thead>
+                                                            </table>
+                                                        </div>
+                                                    </dd>
+                                                </dl>
+                                            </section>
+
+                                        </td>
+                                    </tr>
+
+                                    <!--下拉-->
+
+
+
+
+                                {% endfor %}
+                                <!-- more data -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="am-u-lg-12 am-cf">
+                            <div class="am-fr">
+                                <ul class="am-pagination tpl-pagination">
+                                    {% load pages %}
+                                    {% pages data.paginator.num_pages request %}
+                                </ul>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

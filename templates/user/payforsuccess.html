@@ -1,0 +1,51 @@
+{% extends 'user/demo/index.html' %}
+{% block title %}
+    <title>付款成功</title>
+{% endblock %}
+
+{% block css_js %}
+    <link rel="stylesheet" type="text/css" href="/static/user/css/cart.css">
+    <link rel="stylesheet" type="text/css" href="/static/user/css/cart-app.css">
+
+{% endblock %}
+{% block carpath %}
+    <div class="navbar-left">
+        <ol class="breadcrumb">
+            <li>购物车</li>
+            <li>确认订单</li>
+            <li >在线支付</li>
+            <li class="active" style="color: #0e90d2" >完成</li>
+        </ol>
+    </div>
+{% endblock %}
+
+{% block con %}
+    <!--地址选择的开头-->
+    <div class="mainbody cart" style="padding-bottom:10px ">
+        <div class="container">
+            <table class="cart-header">
+                <tr>
+                    <td class="cart-col-select col-md-3 col-xs-3 col-sm-3">
+                          <h4 style="padding-top: 6px;color: #666666;">付款成功<span style="color: #0e90d2;">>>></span></h4><
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="mainbody cart" style="padding-bottom:10px ">
+        <div class="container">
+            <table class="cart-header">
+                <tr>
+                    <div class="row">
+                        <div class="col-sm-6 col-md-4 col-md-offset-4">
+                            <div class="thumbnail">
+                                <h3 style="text-align: center">付款成功前往>>><a href="{% url 'my_order_list' %}">我的订单</a></h3>
+                            </div>
+                        </div>
+                    </div>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+{% endblock %}

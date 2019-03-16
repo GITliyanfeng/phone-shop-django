@@ -1,0 +1,102 @@
+{% extends 'user/demo/index.html' %}
+{% block title %}
+    <title>付款</title>
+{% endblock %}
+
+{% block css_js %}
+    <link rel="stylesheet" type="text/css" href="/static/user/css/cart.css">
+    <link rel="stylesheet" type="text/css" href="/static/user/css/cart-app.css">
+
+{% endblock %}
+{% block carpath %}
+    <div class="navbar-left">
+        <ol class="breadcrumb">
+            <li>购物车</li>
+            <li>确认订单</li>
+            <li class="active" style="color: #0e90d2">在线支付</li>
+            <li>完成</li>
+        </ol>
+    </div>
+{% endblock %}
+
+{% block con %}
+    <!--地址选择的开头-->
+    <div class="mainbody cart" style="padding-bottom:10px ">
+        <div class="container">
+            <table class="cart-header">
+                <tr>
+                    <td class="cart-col-select col-md-3 col-xs-3 col-sm-3">
+                        <h4 style="padding-top: 6px;color: #666666;">在线付款<span style="color: #0e90d2;">>>></span></h4>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="mainbody cart" style="padding-bottom:10px ">
+        <div class="container">
+            <table class="cart-header">
+                <tr>
+
+                    <div class="row">
+                        <div class="col-sm-6 col-md-4 col-md-offset-4">
+                            <div class="thumbnail">
+                                <br>
+                                <br>
+                                <img
+                                        src="/static/1537460921.png"
+                                        data-holder-rendered="true" style="height: 200px; display: block;">
+                                <div class="caption">
+                                    <h3 style="text-align: center">收货人：<span>{{ data.name }}</span></h3>
+                                    <br>
+                                    <p style="text-align: center"><span
+                                            style="font-size: 20px">地址：</span><span>{{ data.addr }}</span></p>
+                                    <br>
+                                    <p style="text-align: center"><span style="font-size: 20px">总计：</span><span
+                                            style="color: red">{{ data.total }}</span>元</p>
+                                    <br>
+                                    {#                                    两个a标签，一个付款-修改订单状态为-1-跳转到～支付成功的页面，另一个取消，直接跳转的奥订单列表界面#}
+                                    <p style="text-align: center">
+
+
+                                        <button class="btn btn-primary " have="confirm" role="button">付款</button>
+
+
+                                        <button class="btn btn-default " have="cancel" role="button">取消</button>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </tr>
+            </table>
+        </div>
+    </div>
+    <script>
+        $('button[have="confirm"],button[have="cancel"]').click(function () {
+                ob = $(this);
+                // 判断当前点击的按钮是付款还是取消，通过have属性来区别按钮
+                if (ob.attr('have') == 'confirm') {
+                    console.log('点击的是付款按钮');
+                    // 提交订单号码
+                    $.get("{% url 'order_pay_fored' %}", {id:{{ data.id }}}, function (data) {
+                        if (data) {
+                            alert(data['msg']);
+                            location.href = '{% url 'order_pay_for_suscess' %}';
+                        } else {
+                            alert("付款失败");
+                            location.href = '{% url 'my_order_list' %}';
+
+                        }
+                    }, 'json');
+
+
+                } else {
+                    console.log('点击的是取消按钮');
+                    // 取消按钮意味着----直接跳转到我的订单的位置，显示当前用户的所有订单以及订单的状态
+                    location.href = '{% url 'my_order_list' %}';
+                }
+            }
+        )
+    </script>
+{% endblock %}

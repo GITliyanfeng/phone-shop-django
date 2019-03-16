@@ -1,0 +1,66 @@
+{% extends 'user/register.html' %}
+{% block title %}
+    <title>用户登录</title>
+{% endblock %}
+{% block con %}
+    <div id="content" class="content">
+    <div class="container-fluid">
+		<div class="banner-box hidden-xs hidden-sm">
+			<div class="container">
+				<form id="mainForm" action="{% url 'user_login' %}?lastpath={{ request.GET.lastpath }}" class="main-form" method="post">
+                    {% csrf_token %}
+					<div class="tab-title">
+						<a class="linkAGray" id="toAccountLogin" href="javascript:void(0);">账号登录</a>
+					</div>
+					<div class="tip-box">
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+						  <i class="glyphicon glyphicon-exclamation-sign"></i>
+						  <span class="tip-font">请输入正确的密码</span>
+						  <span aria-hidden="true" class="cha">×</span>
+						</button>
+					</div>
+					<div class="normalInput cycode-box fieldInput btn-error" id="cycode-box">
+						<div class="cycode-selectbox">
+							<input class="ipt-account inp-focus" name="phone" id="account" maxlength="50" placeholder="手机号" autocomplete="off">
+						</div>
+					</div>
+                    <div class="normalInput cycode-box fieldInput btn-error" id="">
+						<div class="cycode-selectbox div" style="position: relative">
+							<input class="ipt-account inp-focus" name="verifycode" id="" minlength="4" maxlength="4" placeholder="验证码" autocomplete="off" >
+                            <img src="{% url 'user_pass_code' %}" class="yanzhengma" alt="验证码" width="120px" style="position: absolute;left: 170px;top: 8px;">
+						</div>
+					</div>
+					<div class="normalInput fieldInput passwd-box btn-focus btn-error">
+						<input class="inp-focus" name="password" id="password" maxlength="16" placeholder="密码" autocomplete="off" type="password">
+				   </div>
+
+					<a id="nextStep" class="fullBtnBlue">登录</a>
+					<div class="transferField">
+						<a class="go2forgetpwd linkABlue rememberFieldForA" href="#">忘记密码?</a>
+						<a class="go2register linkABlue" href="{% url 'user_regiser' %}" id="toRegister">注册</a>
+					</div>
+				</form>
+			</div>
+		</div>
+      <!-- 移动端结构 -->
+
+
+
+    </div>
+  </div>
+    <script>
+    $('.div').on('click','.yanzhengma',function () {
+        var img = $('.div .yanzhengma');
+        var di = $('.div');
+        $.get({% url 'user_pass_code' %},function(data){
+            if (data){
+            img.remove();
+            var newimg = $('<img src="/passcode/" class="yanzhengma" alt="验证码" width="120px" style="position: absolute;left: 170px;top: 8px;">');
+            di.append(newimg)}else {
+                alert('获取验证码错误');
+            };
+
+        });
+    })
+    </script>
+{% endblock %}
